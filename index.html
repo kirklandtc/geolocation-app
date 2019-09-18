@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <title>Geocoding Project</title>
+  </head>
+
+  <body>
+    <div id="formatted-address"></div>
+<script>
+//Call Geocode
+  geocode();
+
+  function geocode(){
+    var location = '100 Main St Longmont CO';
+    axios.get('https://maps.googleapis.com/maps/api/geocode/json',{
+      params:{
+        address:location,
+        key:'AIzaSyB-PAZH-QZweXPBarQ15mVyIgUJHQyXTSs'
+      }
+    })
+    .then(function(response){
+      // Log full response
+
+      console.log(response);
+      // Formatted address
+      var formattedAddress = response.data.results[0].formatted_address;
+      var formattedAddressOutput =`
+      <ul class="list-group">
+      <li class="list-group-item">${formattedAddress}</li>
+      </ul>
+      `;
+
+      //Ouptput to application
+      document.getElementById("formatted-address").innerHTML = formattedAddressOutput;
+
+
+    })
+    .catch(function(error){
+      console.log(error);
+    });
+  }
+</script>
+
+  </body>
+</html>
