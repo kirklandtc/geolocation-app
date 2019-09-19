@@ -11,7 +11,10 @@
   </head>
 
   <body>
+    <div class="container">
     <div id="formatted-address"></div>
+    <div id="address-components"></div>
+   </div>
 <script>
 //Call Geocode
   geocode();
@@ -36,8 +39,21 @@
       </ul>
       `;
 
+      // Address Components
+
+      var addressComponents = response.data.results[0].address_components;
+      var addressComponentsOutput = 'ul class="list-group">';
+      for(var i = 0; i < addressComponents.length; i++){
+        addressComponentsOutput += `
+        <li class= "list-group-item"><strong>${addressComponents[i].types[0]}</strong>: ${addressComponents[i].long_name}</li>
+        `;
+      }
+
+      addressComponentsOutput += '</ul>';
+
       //Ouptput to application
-      document.getElementById("formatted-address").innerHTML = formattedAddressOutput;
+      document.getElementById("formatted-address").innerHTML = formattedAddressOutput
+      document.getElementById("address-components").innerHTML = addressComponentsOutput;
 
 
     })
