@@ -1,26 +1,56 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
+
+
+
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
+    <link href="https://fonts.googleapis.com/css?family=Bowlby+One+SC&display=swap" rel="stylesheet">
 
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
+    <link rel="stylesheet" type="text/css" href="style.css">
     <title>Geocoding Project</title>
+    
   </head>
 
-  <body>
+   <body>
     <div class="container">
-    <div id="formatted-address"></div>
-    <div id="address-components"></div>
+
+    <h2 id="text-center">Enter Location: </h2>
+    <form id= "location-form">
+    <input type="text" id="location-input" class="form-control form-control-lg">
+    <br>
+    <button type="submit" class="btn btn-primary
+    btn-block">Submit</button>
+    <br>
+
+    <div class="card-block" id="formatted-address"></div>
+    <div class="card-block" id="address-components"></div>
+    <div class="card-block" id="geometry"></div>
    </div>
+
 <script>
 //Call Geocode
-  geocode();
+//  geocode();
 
-  function geocode(){
-    var location = '100 Main St Longmont CO';
+//get location form
+
+var locationForm = document.getElementById('location-form');
+
+//listen for Submit
+
+locationForm.addEventListener('submit', geocode);
+
+  function geocode(e){
+
+//Prevent actual Submit
+
+e.preventDefault();
+
+
+    var location = document.getElementById('location-input').value;
     axios.get('https://maps.googleapis.com/maps/api/geocode/json',{
       params:{
         address:location,
@@ -31,6 +61,7 @@
       // Log full response
 
       console.log(response);
+
       // Formatted address
       var formattedAddress = response.data.results[0].formatted_address;
       var formattedAddressOutput =`
@@ -42,7 +73,8 @@
       // Address Components
 
       var addressComponents = response.data.results[0].address_components;
-      var addressComponentsOutput = 'ul class="list-group">';
+      var addressComponentsOutput ='<ul class= "list-group">';
+
       for(var i = 0; i < addressComponents.length; i++){
         addressComponentsOutput += `
         <li class= "list-group-item"><strong>${addressComponents[i].types[0]}</strong>: ${addressComponents[i].long_name}</li>
@@ -51,10 +83,21 @@
 
       addressComponentsOutput += '</ul>';
 
+      //geometry
+
+      var lat = response.data.results[0].geometry.location.lat;
+      var lng = response.data.results[0].geometry.location.lng;
+      var geometryOutput =`
+      <ul class="list-group">
+      <li class="list-group-item"><strong>Latitude</strong>${lat}</li>
+      <li class="list-group-item"><strong>Longitude</strong>${lng}</li>
+      </ul>
+      `;
+
       //Ouptput to application
       document.getElementById("formatted-address").innerHTML = formattedAddressOutput
       document.getElementById("address-components").innerHTML = addressComponentsOutput;
-
+      document.getElementById("geometry").innerHTML = geometryOutput;
 
     })
     .catch(function(error){
